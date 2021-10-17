@@ -77,49 +77,58 @@ using namespace std;
 		For testing: We will use option 2 in the playlist with 4 different songs including the first song, a random
 		song (chosen in the middle somewhere), and the last song twice.*/
 		DNode *tmp;
+		int index = 0;
 		       for (tmp = first;  tmp != NULL; tmp = tmp->next)  {
 				if (tmp->song->title== t) {
 					/*cout << 'Removing: '<< tmp->song->printSong();
 					cout << endl;*/
 					if (tmp->prev== NULL) {
 						first = tmp->next;
+
 		 			}
 					else if(tmp->next== NULL) {
-						//Need to use pop
-						//tmp->prev->next = NULL;
-						//pop();
-						return true;
+						*pop();
 		      			}
 					else { /* Remove from middle */
 		       				tmp->prev->next=tmp->next; /* Fix previous node's next to  skip over the removed node.  */
 		       				tmp->next->prev = tmp->prev; /* Fix next node's prev to skip over the removed node. */
 		     		 	}
 		      			delete tmp;
-					return true;
 				 }
+				index++;
 		  	}
-		  	return false;
+		  	return index;
 
 
 	}
-/*	Song DLL::*pop(){*/
+	Song *DLL::pop(){
 	 	/*This pops the last node off the list. If there is only one node on the list, it resets first and last to
 		NULL and the numSongs field to 0. It returns a song object.
 		(Honestly, I barely used pop in this project. I had it called when I removed the last node from
 		the list using a special case in my remove method. I am having you write it because it is just so
 		fundamental to linked lists that I would be remiss as a teacher if I didn’t have you write this).
 		For testing: I am happy with your calling it successfully from your remove method*/
-	/*
-		DNode *t = last;
-		Song x = t->song;
-		last = last -> prev;
-		delete t;
-		last->next = NULL;
-		numSongs--;
+		Song *x = NULL;
+		if(numSongs == 1){
+			x=first->song;
+			first = NULL;
+			last = NULL;
+			numSongs =0;
+		}
+		else{
+			DNode *t = last;
+			x = t->song;
+			last = last -> prev;
+			delete t->song;
+			delete t;
+			last->next = NULL;
+			numSongs--;
+		}
+
 		return x;
 
 	}
-*/
+
 	void DLL::moveUp(string t){
 		/*This method moves a song up one in the playlist. For instance, if you had the following:
 		Punching in a Dream, The Naked And Famous................3:58
@@ -259,6 +268,7 @@ For Testing: We will be using Option 6 in the Playlist’s interface. For that, th
 and you will be asked to enter the name of a new text file with a new set of songs to be read into a list.
 Note: after you do this, you should use the option 7 to get a new list duration, and double-check it.*/
 		for (DNode *tmp = first;  tmp != NULL; tmp = tmp->next)  {
+			delete tmp->song;
 			delete tmp;
 		}
 
