@@ -18,5 +18,4 @@ public:
 };
 
 
-
 #endif /* DNODE_HPP_ */

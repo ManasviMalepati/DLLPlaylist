@@ -193,7 +193,7 @@ void Playlist::readList(string f) {
 	string secs;
 	while (!file.eof()) {
 		getline(file,songstr);
-		cout << songstr<<endl;
+		cout << songstr << endl;
 		title = strip(songstr);
 		artist = strip(songstr);
 		mins = strip(songstr);
