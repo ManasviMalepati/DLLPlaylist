@@ -80,8 +80,9 @@ using namespace std;
 		int index = 0;
 		       for (tmp = first;  tmp != NULL; tmp = tmp->next)  {
 				if (tmp->song->title== t) {
-					/*cout << 'Removing: '<< tmp->song->printSong();
-					cout << endl;*/
+					cout << "Removing: ";
+					tmp->song->printSong();
+					cout << endl;
 					if (tmp->prev== NULL) {
 						first = tmp->next;
 
@@ -89,10 +90,11 @@ using namespace std;
 					else if(tmp->next== NULL) {
 						*pop();
 		      			}
-					else { /* Remove from middle */
-		       				tmp->prev->next=tmp->next; /* Fix previous node's next to  skip over the removed node.  */
-		       				tmp->next->prev = tmp->prev; /* Fix next node's prev to skip over the removed node. */
+					else {
+		       				tmp->prev->next=tmp->next;
+		       				tmp->next->prev = tmp->prev;
 		     		 	}
+						delete tmp->song;
 		      			delete tmp;
 				 }
 				index++;
@@ -119,8 +121,6 @@ using namespace std;
 			DNode *t = last;
 			x = t->song;
 			last = last -> prev;
-			delete t->song;
-			delete t;
 			last->next = NULL;
 			numSongs--;
 		}
