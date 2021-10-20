@@ -171,16 +171,39 @@ using namespace std;
 			last = f;
 		}
 		else{
-			for (DNode *x = first->next;  x != NULL; x = x->next)  {
-				if(t==x->song->title){
-					DNode *previous = x->prev;
-					DNode *nextsong = x->next;
-					x->prev = previous->prev;
-					previous->prev->next = x;
-					previous->next = nextsong;
-					previous->prev = x;
-					x->next = previous;
-					nextsong->prev = previous;
+			for (DNode *tmp = first->next;  tmp != NULL; tmp = tmp->next)  {
+				if(t==tmp->song->title){
+					 DNode *before = tmp->prev;
+					  DNode *after = tmp->next;
+					        if ((after != NULL) && (before->prev != NULL)) {
+					            before->prev->next = tmp;
+					            tmp->prev = before->prev;
+					            tmp->next = before;
+					            before->prev = tmp;
+					            before->next = after;
+					            after->prev = before;
+					        } else if ((after != NULL) && (before->prev == NULL)) {
+					            tmp->prev = NULL;
+					            tmp->next = before;
+					            before->prev = tmp;
+					            before->next = after;
+					            after->prev = before;
+					            first = tmp;
+					        } else if ((after == NULL) && (before->prev != NULL)) {
+					            before->prev->next = tmp;
+					            tmp->prev = before->prev;
+					            tmp->next = before;
+					            before->prev = tmp;
+					            before->next = NULL;
+					            last = before;
+					        } else {
+					            tmp->prev = NULL;
+					            tmp->next = before;
+					            before->prev = tmp;
+					            before->next = NULL;
+					            first = tmp;
+					            last = before;
+					        }
 				}
 			}
 		}
@@ -221,16 +244,39 @@ using namespace std;
 					last = secondlast;
 				}
 				else{
-					for (DNode *x = first->next;  x != NULL; x = x->next)  {
-						if(t==x->song->title){
-							DNode *previous = x->prev;
-							DNode *nextsong = x->next;
-							x->next = nextsong->next;
-							nextsong->next->prev = x;
-							nextsong->prev = previous;
-							previous->next = nextsong;
-							x->prev = nextsong;
-							nextsong->next = x;
+					for (DNode *tmp = first->next;  tmp != NULL; tmp = tmp->next)  {
+						if(t==tmp->song->title){
+							DNode *before = tmp->prev;
+							DNode  *after = tmp->next;
+							        if ((before != NULL) && (after->next != NULL)) {
+							            after->next->prev = tmp;
+							            tmp->next = after->next;
+							            tmp->prev = after;
+							            after->next = tmp;
+							            after->prev = before;
+							            before->next = after;
+							        } else if ((before != NULL) && (after->next == NULL)) {
+							            tmp->next = NULL;
+							            tmp->prev = after;
+							            after->next = tmp;
+							            after->prev = before;
+							            before->next = after;
+							            last = tmp;
+							        } else if ((before == NULL) && (after->next != NULL)) {
+							            after->next->prev = tmp;
+							            tmp->next = after->next;
+							            tmp->prev = after;
+							            after->next = tmp;
+							            after->prev = NULL;
+							            first = after;
+							        } else {
+							            tmp->next = NULL;
+							            tmp->prev = after;
+							            after->next = tmp;
+							            after->prev = NULL;
+							            last = tmp;
+							            first = after;
+							        }
 						}
 					}
 				}
@@ -238,28 +284,48 @@ using namespace std;
 
 	}
 
-
 	void DLL::makeRandom(){
-		/*This method randomly shuffles the songs so that they are in a different, random order.
-		For testing: Randomly shuffle the list twice using the option 5 in the Playlist interface (This
-		option automatically calls the printList method for the list, so you can see your randomly
-		ordered list)*/
-		DNode *m;
-		for (m = first;  m != NULL; m = m->next)  {
-			int a = rand()%numSongs;
-			int o=0;
-			for(DNode *u=first;o<=a;u=u->next){
-				if(o==a){
-					Song *v = m->song;
-					m->song = u->song;
-					u->song = v;
+			/*This method randomly shuffles the songs so that they are in a different, random order.
+			For testing: Randomly shuffle the list twice using the option 5 in the Playlist interface (This
+			option automatically calls the printList method for the list, so you can see your randomly
+			ordered list)*/
+			int a[numSongs];
+			for(int i =0;i<numSongs;i++){
+				a[i] = i;
+			}
+			for(int b= 0; b<numSongs;b++){
+				int r = rand()%numSongs;
+				int temp = a[b];
+				a[b] = a[r];
+				a[r] = temp;
+			}
+
+		DNode *newFirst = first;
+		DNode *firstcopy=first;
+		for(int n=numSongs-1;0<=n;n--){
+			for(int o=0;o<a[n];o++){
+				newFirst = newFirst->next;
+			}
+			if(newFirst->prev!=NULL){
+				DNode *pnew = newFirst->prev;
+				if(newFirst==last){
+					pnew->next=NULL;
+					last=pnew;
 				}
-				o++;
+				else{
+					DNode *nnew = newFirst->next;
+					pnew->next = nnew;
+					nnew->prev = pnew;
+				}
+				newFirst->prev = NULL;
+				firstcopy->prev = newFirst;
+				newFirst->next=firstcopy;
+				firstcopy = newFirst;
 			}
 		}
-
+		first = newFirst;
 		return;
-	}
+		}
 
 
 	void DLL::listDuration(int *tm, int *ts){
