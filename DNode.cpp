@@ -2,7 +2,7 @@
  * DNode.cpp
  *
  *  Created on: Oct 16, 2021
- *      Author: manas
+ *      Partner: Daniel Xu
  */
 #include "DNode.hpp"
 #include <iostream>

@@ -159,21 +159,28 @@ using namespace std;
 		Punching in a Dream, The Naked And Famous................3:58
 		For testing: We will run 4 tests, including moving the last song up, the first song up twice, and a random middle
 		song of our choice!*/
-		DNode *x;
 		if(t==first->song->title){
-			DNode *ptemp = last;
-				for(DNode *e = last->prev;e!=NULL;e=e->prev){
-						Song *a = e->song;
-						e->song = ptemp->song;
-						ptemp->song = a;
-						}
+			DNode *second = first->next;
+			DNode *f = first;
+			DNode *l=last;
+			l->next=f;
+			f->prev = l;
+			f->next = NULL;
+			second->prev = NULL;
+			first = second;
+			last = f;
 		}
 		else{
-			for (x = first->next;  x != NULL; x = x->next)  {
+			for (DNode *x = first->next;  x != NULL; x = x->next)  {
 				if(t==x->song->title){
-					Song *v = x->prev->song;
-					x->prev->song = x->song;
-					x->song = v;
+					DNode *previous = x->prev;
+					DNode *nextsong = x->next;
+					x->prev = previous->prev;
+					previous->prev->next = x;
+					previous->next = nextsong;
+					previous->prev = x;
+					x->next = previous;
+					nextsong->prev = previous;
 				}
 			}
 		}
@@ -202,27 +209,35 @@ using namespace std;
 		Still Not a Player, Big Pun Joe................3:56
 		For testing: We will run 4 tests, including moving the first song down, the last song down twice, and a random
 		middle song of our choice down!*/
-		DNode *x;
-				if(t==last->song->title){
-					DNode *ptemp = first;
-						for(DNode *e = first->next;e!=NULL;e=e->next){
-								Song *a = e->song;
-								e->song = ptemp->song;
-								ptemp->song = a;
-										}
+		if(t==last->song->title){
+					DNode *secondlast = last->prev;
+					DNode *f = first;
+					DNode *l=last;
+					f->prev = l;
+					l->next=f;
+					secondlast->next = NULL;
+					l->prev = NULL;
+					first = l;
+					last = secondlast;
 				}
 				else{
-					for (x = last->prev;  x != NULL; x = x->prev)  {
+					for (DNode *x = first->next;  x != NULL; x = x->next)  {
 						if(t==x->song->title){
-							Song *v = x->next->song;
-							x->next->song = x->song;
-							x->song = v;
+							DNode *previous = x->prev;
+							DNode *nextsong = x->next;
+							x->next = nextsong->next;
+							nextsong->next->prev = x;
+							nextsong->prev = previous;
+							previous->next = nextsong;
+							x->prev = nextsong;
+							nextsong->next = x;
 						}
 					}
 				}
 				return;
 
 	}
+
 
 	void DLL::makeRandom(){
 		/*This method randomly shuffles the songs so that they are in a different, random order.
